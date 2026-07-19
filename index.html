@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chrisantie</title>
+
+    <!-- Tailwind Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom Style Rules for Animation Hooks & Custom Cursor -->
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Webkit Engine Custom Scrollbar Layout UI */
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #050816;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #838384;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #3b82f6;
+    }
+
+    /* Intersection Observer Reveal Animation Styles */
+    .reveal {
+        opacity: 0;
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform, opacity;
+    }
+    .reveal-up { transform: translateY(40px); }
+    .reveal-left { transform: translateX(-40px); }
+    .reveal-right { transform: translateX(40px); }
+    .reveal-scale { transform: scale(0.95); }
+    
+    .active-reveal {
+        opacity: 1 !important;
+        transform: translate(0) scale(1) !important;
+    }
+
+    /* Typing cursor micro animation effect */
+    .typing-cursor::after {
+        content: '|';
+        animation: blink 1s infinite;
+    }
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+
+    /* Ambient background grid decoration pattern layout */
+    .bg-grid-pattern {
+        background-size: 30px 30px;
+        background-image: linear-gradient(to right, rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                          linear-gradient(to bottom, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+    }
+
+    .custom-cursor {
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9999;
+        display: none; /* Keeps the core dot hidden */
+    }
+
+    /* FIXED: Scaled down default size from 32px to 20px */
+    .custom-cursor-follower {
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(8, 44, 100, 0.582);
+        border-radius: 50%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 9998;
+        transition: left 0.1s ease-out, top 0.1s ease-out, width 0.3s ease, height 0.3s ease, border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 0 100px rgba(59, 130, 246, 0.15);
+        background-color: rgba(59, 130, 246, 0.02);
+    }
+
+    .custom-cursor.cursor-active {
+        /* Maintained for script compatibility */
+    }
+
+    /* FIXED: Scaled down hover expansion size from 44px to 28px */
+    .custom-cursor-follower.cursor-active {
+        width: 28px;
+        height: 28px;
+        border-color: rgba(96, 165, 250, 0.8);
+        background-color: rgba(59, 130, 246, 0.08);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.35);
+    }
+
+    /* Morphing Dock Link Custom Overrides */
+    .nav-link-pill {
+        position: relative;
+        z-index: 10;
+        transition: color 0.3s ease;
+    }
+
+    #nav-indicator {
+        transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    #links-wrapper {
+        transition: max-width 0.5s cubic-bezier(0.25, 1, 0.5, 1), 
+                    opacity 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+                    margin-left 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    /* Responsive adjustments: Hide standard custom mouse items completely on mobile touch screens */
+    @media (pointer: coarse) {
+        .custom-cursor, .custom-cursor-follower {
+            display: none !important;
+        }
+    }
+</style>
+
+    <!-- Fonts & Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="icon" type="image/png" href="Images/FAVCON.png" onerror="this.href='https://placehold.co/32x32/08142c/ffffff?text=C'" />
+</head>
+
+<body class="bg-gradient-to-b from-[#050816] via-[#0b1120] to-black text-white overflow-x-hidden relative">
+
+    <!-- Custom Desktop Cursor Layers -->
+    <div class="custom-cursor hidden md:block" id="customCursor"></div>
+    <div class="custom-cursor-follower hidden md:block" id="customCursorFollower"></div>
+
+    <!-- 17. Loading Screen Overlay -->
+    <div id="loading-screen" class="fixed inset-0 bg-[#050816] z-[9999] flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out">
+        <div class="relative flex items-center justify-center">
+            <div class="w-20 h-20 border-4 border-blue-900/30 border-t-blue-500 rounded-full animate-spin"></div>
+            <span class="absolute text-xl font-bold font-mono text-blue-400">C</span>
+        </div>
+        <p class="text-slate-400 font-mono tracking-widest mt-4 text-sm animate-pulse">Loading Portfolio...</p>
+    </div>
+
+    <!-- 14. Background Ambient Decorations -->
+    <div class="absolute inset-0 bg-grid-pattern pointer-events-none z-0"></div>
+    <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/5 blur-[150px] rounded-full pointer-events-none mix-blend-screen animate-pulse-slow"></div>
+    <div class="absolute top-[1500px] right-1/4 w-[600px] h-[600px] bg-purple-600/5 blur-[180px] rounded-full pointer-events-none mix-blend-screen"></div>
+    <div class="absolute bottom-64 left-10 w-[400px] h-[400px] bg-blue-900/10 blur-[130px] rounded-full pointer-events-none mix-blend-screen"></div>
+
+    <!-- 16. Ultra-Dynamic Animated Navbar -->
+    <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50">
+        <nav id="navbar" class="flex items-center justify-center h-14 px-4 rounded-full bg-black/60 backdrop-blur-xl border border-blue-900/30 shadow-2xl transition-all duration-500 ease-out group select-none">
+            
+            <!-- Logo (Always Anchor Viewpoint) -->
+            <a href="#" class="text-sm font-bold tracking-wider whitespace-nowrap px-3 transition duration-300">
+                <span class="bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
+                    PORTFOLIO .ᐟ
+                </span>
+            </a>
+
+            <!-- Desktop Links Wrapper: Collapsed by default, expands fluidly on menu hover -->
+            <div id="links-wrapper" class="max-w-0 opacity-0 overflow-hidden md:group-hover:max-w-2xl md:group-hover:opacity-100 md:group-hover:ml-4 flex items-center h-full">
+                <ul id="nav-list" class="relative flex items-center gap-1 text-xs font-medium tracking-wide h-full py-1.5">
+                
+                    <!-- The Dynamic Sliding Background Pill Backdrop -->
+                    <div id="nav-indicator" class="absolute h-full rounded-full bg-blue-600/20 border border-blue-500/30 opacity-0 pointer-events-none z-0"></div>
+
+                    <!-- Navigation Items -->
+                    <li><a href="#about" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">About</a></li>
+                    <li><a href="#skills" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Skills</a></li>
+                    <li><a href="#experience" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Experience</a></li>
+                    <li><a href="#education" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Education</a></li>
+                    <li><a href="#projects" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Portfolio</a></li>
+                </ul>
+            </div>
+
+            <!-- Mobile Dropdown Menu Drawer Frame -->
+            <div id="mobile-menu" class="hidden mt-2 w-[90vw] max-w-sm bg-black/95 backdrop-blur-2xl border border-blue-900/30 rounded-2xl p-4 flex flex-col gap-1 shadow-2xl md:hidden origin-top transition-all duration-300 transform scale-95 opacity-0">
+                <a href="#about" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">About</a>
+                <a href="#skills" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Skills</a>
+                <a href="#experience" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Experience</a>
+                <a href="#education" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Education</a>
+                <a href="#projects" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Portfolio</a>
+            </div>
+        </header>
+
+    <!-- Main Content Area Container -->
+    <main class="w-full min-h-screen relative z-10">
+
+        <!-- 1. Redesigned Hero Section -->
+        <section class="relative pt-32 md:pt-40 pb-20 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-center">
+            
+            <!-- Left Info Content -->
+            <div class="md:col-span-7 space-y-6 text-center md:text-left order-2 md:order-1">
+                <!-- Availability Badge -->
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-medium tracking-wide mx-auto md:mx-0">
+                    <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                    Not Yet Available for Internship
+                </div>
+                
+                <div class="space-y-2">
+                    <p class="text-blue-400 font-mono text-sm tracking-widest font-medium">Hi, I'm</p>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                        Chrisantie Buenaobra
+                    </h1>
+                    <h2 class="text-xl sm:text-2xl font-semibold text-slate-300 mt-2">
+                        BS Information Systems Student
+                    </h2>
+                    <!-- Animated Typing Hook Container -->
+                    <div class="text-blue-400 text-lg font-mono min-h-[28px]">
+                        <span id="typing-element" class="typing-cursor font-semibold"></span>
+                    </div>
+                </div>
+
+                <!-- Call to Action Buttons -->
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
+                    <a href="#projects" class="group px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-medium shadow-lg shadow-blue-600/30 hover:shadow-blue-500/50 transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-1">
+                        View Projects
+                        <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                    </a>
+                    <a href="#contact" class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 hover:text-white font-medium border border-blue-900/40 hover:border-blue-500/40 transition-all duration-300 transform hover:-translate-y-1">
+                        Contact Me
+                    </a>
+                </div>
+
+                <!-- Simple Social Icon List Alignment -->
+                <div class="flex items-center justify-center md:justify-start gap-4 pt-4 text-slate-400 text-xl">
+                    <a href="https://github.com/kdynvmd" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors duration-200"><i class="fab fa-github"></i></a>
+                    <a href="https://www.facebook.com/r1s.cruz" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors duration-200"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/nvmdr1s_/" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400 transition-colors duration-200"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+
+            <!-- Right Avatar Graphic Display Banner Container -->
+            <div class="md:col-span-5 flex justify-center order-1 md:order-2">
+                <div class="relative p-2 rounded-full bg-blue-500/5 backdrop-blur-md border border-blue-500/20 shadow-2xl">
+                    <!-- Glowing Radial Background Vector circle -->
+                    <div class="absolute inset-0 bg-blue-500/20 blur-[50px] rounded-full -z-10 animate-pulse"></div>
+                    <img
+                        src="Images/ID2X2.png"
+                        alt="Profile Picture"
+                        class="w-48 h-48 sm:w-60 sm:h-60 md:w-64 md:h-64 rounded-full border-4 border-[#0f172a] shadow-[0_0_50px_rgba(59,130,246,0.3)] object-cover hover:scale-105 hover:rotate-2 transition duration-500 pointer-events-auto"
+                        onerror="this.src='https://placehold.co/400x400/0b1120/ffffff?text=Chrisantie'""
+                    />
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Interactive Statistics Dashboard Section -->
+        <section class="max-w-5xl mx-auto px-6 py-8 reveal reveal-up">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Stat Card 1 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 text-center hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300">
+                    <h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">3</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 uppercase font-mono tracking-wider">Projects Completed</p>
+                </div>
+                <!-- Stat Card 2 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 text-center hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300">
+                    <h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">∞</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 uppercase font-mono tracking-wider">Continuous Learning</p>
+            </div>
+                <!-- Stat Card 3 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 text-center hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300">
+                    <h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">6+</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 uppercase font-mono tracking-wider">Technologies Stacked</p>
+                </div>
+                <!-- Stat Card 4 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 text-center hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300">
+                    <h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">100%</h3>
+                    <p class="text-xs sm:text-sm text-slate-400 mt-1 uppercase font-mono tracking-wider">Passionate</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Refined Professional About Me Section -->
+        <section id="about" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold tracking-tight">Who am I?</h2>
+                <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <div class="bg-slate-900/30 backdrop-blur-md p-8 rounded-3xl border border-blue-900/20 max-w-4xl mx-auto space-y-8">
+                <p class="text-slate-300 leading-relaxed text-center text-lg max-w-3xl mx-auto">
+                    I am <strong class="text-blue-400 font-semibold"> Chrisantie Cruz Buenaobra</strong>, also known as <strong class="text-blue-400 font-semibold"> Ris</strong>. I am a critical thinker who enjoys solving real-world problems and has a strong passion for technology. I love learning how things work, how to design, and how to build websites, which led me to pursue software engineering.
+
+                <!-- Soft Hobbies Matrix Section Grid -->
+                <div>
+                    <h3 class="text-center font-mono text-xs uppercase tracking-widest text-slate-400 mb-5">Interests & Personal Hobbies</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="flex items-center justify-center gap-3 p-4 rounded-xl bg-slate-950/50 border border-blue-900/10 hover:border-blue-500/30 transition duration-300">
+                            <span class="text-xl">🍳</span>
+                            <span class="text-sm font-medium text-slate-300">Cooking</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-3 p-4 rounded-xl bg-slate-950/50 border border-blue-900/10 hover:border-blue-500/30 transition duration-300">
+                            <span class="text-xl">🎮</span>
+                            <span class="text-sm font-medium text-slate-300">Gaming</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-3 p-4 rounded-xl bg-slate-950/50 border border-blue-900/10 hover:border-blue-500/30 transition duration-300">
+                            <span class="text-xl">📸</span>
+                            <span class="text-sm font-medium text-slate-300">Photography</span>
+                        </div>
+                        <div class="flex items-center justify-center gap-3 p-4 rounded-xl bg-slate-950/50 border border-blue-900/10 hover:border-blue-500/30 transition duration-300">
+                            <span class="text-xl">🎙️</span>
+                            <span class="text-sm font-medium text-slate-300">Singing</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Quote Blockquote element hook -->
+                <div class="pt-4 border-t border-blue-900/10 text-center">
+                    <p class="text-slate-400 italic text-sm">
+                        “Look, listen, learn, and grow by trying new things — no matter what.”
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Professional Skills Matrix Stack Dashboard -->
+        <section id="skills" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight">Technical Stack</h2>
+                <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Frontend Grid Card -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 shadow-xl hover:border-blue-500/30 transition-all duration-300 hover:shadow-blue-500/5">
+                    <h3 class="text-lg font-bold text-blue-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-code text-sm"></i> Frontend Development
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>HTML</span><span>100%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>CSS</span><span>90%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-purple-500 h-2 rounded-full" style="width: 90%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>Tailwind</span><span>50%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-cyan-400 h-2 rounded-full" style="width: 50%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>JavaScript</span><span>70%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-red-500 h-2 rounded-full" style="width: 70%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Backend Infrastructure Stack Card -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 shadow-xl hover:border-blue-500/30 transition-all duration-300 hover:shadow-blue-500/5">
+                    <h3 class="text-lg font-bold text-indigo-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-server text-sm"></i> Backend Development
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>C++</span><span>80%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-yellow-500 h-2 rounded-full" style="width: 80%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>VS Code</span><span>100%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-blue-500 h-2 rounded-full" style="width: 100%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>MySQL</span><span>40%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-pink-400 h-2 rounded-full" style="width: 40%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-mono mb-1 text-slate-300"><span>PHP</span><span>50%</span></div>
+                            <div class="w-full bg-slate-950 rounded-full h-2"><div class="bg-slate-400 h-2 rounded-full" style="width: 50%"></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Production Tools Card Portfolio component hook -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 shadow-xl hover:border-blue-500/30 transition-all duration-300 hover:shadow-blue-500/5">
+                    <h3 class="text-lg font-bold text-emerald-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-screwdriver-wrench text-sm"></i> Architecture & Tools
+                    </h3>
+                    <div class="flex flex-wrap gap-2.5 pt-2">
+                        <span class="bg-slate-950/60 text-slate-300 border border-blue-900/30 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5"><i class="fa-solid fa-robot text-cyan-500"></i> Gemini</span>
+                        <span class="bg-slate-950/60 text-slate-300 border border-blue-900/30 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5"><i class="fab fa-github"></i> GitHub</span>
+                        <span class="bg-slate-950/60 text-slate-300 border border-blue-900/30 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5"><i class="fa-solid fa-code text-blue-400"></i> Visual Studio Code</span>
+                        <span class="bg-slate-950/60 text-slate-300 border border-blue-900/30 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5"><i class="fa fa-atom text-yellow-400"></i> Antigravity</span>
+                        <span class="bg-slate-950/60 text-slate-300 border border-blue-900/30 px-3 py-1.5 rounded-xl text-xs font-mono flex items-center gap-1.5"><i class="fa-solid fa-window-maximize text-purple-400"></i> XAMPP</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 12. "Currently Learning" Focus Tracker Layer -->
+        <section class="py-10 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="bg-gradient-to-r from-blue-950/30 to-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-500/10 flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="text-center md:text-left">
+                    <h3 class="text-base font-mono font-bold tracking-widest uppercase text-blue-400">Currently Expanding</h3>
+                    <p class="text-sm text-slate-400 mt-1">Actively working on tracking skills to expand stack reach:</p>
+                </div>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <span class="px-4 py-2 rounded-xl bg-slate-950 text-slate-300 border border-blue-900/40 text-xs font-medium flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span> JavaScript
+                    </span>
+                    <span class="px-4 py-2 rounded-xl bg-slate-950 text-slate-300 border border-blue-900/40 text-xs font-medium flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span> C++
+                    </span>
+                    <span class="px-4 py-2 rounded-xl bg-slate-950 text-slate-300 border border-blue-900/40 text-xs font-medium flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping"></span> HTML
+                    </span>
+                    <span class="px-4 py-2 rounded-xl bg-slate-950 text-slate-300 border border-blue-900/40 text-xs font-medium flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-ping"></span> UI/UX Design
+                    </span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. Experience Timeline Track Section -->
+        <section id="experience" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight">Experience</h2>
+                <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card Item 1 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 hover:border-blue-500/40 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-10 h-10 rounded-xl bg-blue-600/10 border border-blue-500/30 flex items-center justify-center text-blue-400 text-lg mb-4 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-laptop-code"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">Academic Projects</h3>
+                    <p class="text-xs font-mono text-blue-400 mb-3">CIIT Coursework // 2023 - Present</p>
+                    <p class="text-slate-400 text-sm leading-relaxed text-justify">
+                        Building coding fundamentals through structured school assignments and milestones. Focused on translating classroom theory into small-scale functional web pages, simple software tools, and essential programming exercises.
+                    </p>
+                </div>
+                <!-- Card Item 2 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 hover:border-blue-500/40 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-10 h-10 rounded-xl bg-indigo-600/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 text-lg mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-code-branch"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">Self-Guided Learning</h3>
+                    <p class="text-xs font-mono text-indigo-400 mb-3">Independent Study // Continuous</p>
+                    <p class="text-slate-400 text-sm leading-relaxed text-justify">
+                        Dedication to writing cleaner code outside of class requirements. Spending spare time practicing responsive web development layouts, experimenting with utility ecosystems, and troubleshooting code through trial and error.
+                    </p>
+                </div>
+                <!-- Card Item 3 -->
+                <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 hover:border-blue-500/40 hover:-translate-y-2 transition-all duration-300 group">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-lg mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                        <i class="fa-solid fa-people-line"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-1">Team Collaborations</h3>
+                    <p class="text-xs font-mono text-emerald-400 mb-3">Group Work // Active Focus</p>
+                    <p class="text-slate-400 text-sm leading-relaxed text-justify">
+                        Learning to be an effective, communicative partner within student developer environments. Actively gaining coordination experience by using basic Git workflows and helping build interfaces alongside project peers.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. Upgraded Vertical Education Timeline Section -->
+        <section id="education" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-white">Educational History</h2>
+                <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+            <!-- Timeline Main Tracking Box Grid -->
+            <div class="relative border-l-2 border-slate-800/60 max-w-3xl mx-auto pl-8 ml-4 md:ml-auto space-y-12">
+                
+                <!-- Timeline Element Node 1: College -->
+                <div class="relative group">
+                    <!-- Modern Glowing Dot Indicator -->
+                    <div class="absolute -left-[44px] top-2 w-6 h-6 rounded bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-400 z-10 group-hover:border-slate-500 group-hover:text-slate-300 transition-colors duration-300">
+                        <i class="fa-solid fa-school text-[9px]"></i>
+                    </div>
+                    <!-- Context Card Block -->
+                    <div class="bg-slate-900/30 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 hover:border-blue-500/40 hover:bg-slate-900/50 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-blue-500/10 text-blue-400 border border-blue-500/20 mb-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span> Current Enrollment
+                                </span>
+                                <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors duration-200">
+                                    CIIT College of Innovation and Integrated Technology
+                                </h3>
+                            </div>
+                            <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-950 text-slate-400 border border-slate-800 flex items-center gap-1.5 shrink-0">
+                                <i class="fa-regular fa-calendar text-[11px]"></i> 2025 - Present
+                            </span>
+                        </div>
+                        
+                        <h4 class="text-sm font-semibold text-slate-300">BS Information Systems (BSIS)</h4>
+                        
+                        <p class="text-slate-400 text-sm mt-3 leading-relaxed text-justify">
+                            Learning the design and functional architecture of modern digital systems. Gaining practical foundations in systems analysis, basic database workflows, interactive front-end layouts, and software prototyping strategies.
+                        </p>
+
+                        <!-- Core Competency Micro-Pills -->
+                        <div class="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-slate-800/40">
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Systems Analysis</span>
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">UI Prototyping</span>
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Front-End</span>
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Back-End</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Element Node 2: Senior High School -->
+                <div class="relative group">
+                    <!-- Modern Glowing Dot Indicator -->
+                    <div class="absolute -left-[44px] top-2 w-6 h-6 rounded bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-400 z-10 group-hover:border-slate-500 group-hover:text-slate-300 transition-colors duration-300">
+                        <i class="fa-solid fa-school text-[9px]"></i>
+                    </div>
+                    <!-- Context Card Block -->
+                    <div class="bg-slate-900/30 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 hover:border-indigo-500/40 hover:bg-slate-900/50 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 mb-1.5">
+                                    Completed
+                                </span>
+                                <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors duration-200">
+                                    Trinity Polytechnic College
+                                </h3>
+                            </div>
+                            <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-950 text-slate-400 border border-slate-800 flex items-center gap-1.5 shrink-0">
+                                <i class="fa-regular fa-calendar text-[11px]"></i> 2023 - 2025
+                            </span>
+                        </div>
+                        
+                        <h4 class="text-sm font-semibold text-slate-300">Senior High School — ICT Strand</h4>
+                        
+                        <p class="text-slate-400 text-sm mt-3 leading-relaxed text-justify">
+                            Specialized in the Information and Communications Technology (ICT) track. Developed hands-on familiarity with foundational computer hardware configurations, network setups, validation methodologies, and technical diagnostics.
+                        </p>
+
+                        <!-- Core Competency Micro-Pills -->
+                        <div class="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-slate-800/40">
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Computer Systems Servicing</span>
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Network Basics</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Timeline Element Node 3: Junior High School -->
+                <div class="relative group">
+                    <!-- Modern Glowing Dot Indicator -->
+                    <div class="absolute -left-[44px] top-2 w-6 h-6 rounded bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-400 z-10 group-hover:border-slate-500 group-hover:text-slate-300 transition-colors duration-300">
+                        <i class="fa-solid fa-school text-[9px]"></i>
+                    </div>
+                    <!-- Context Card Block -->
+                    <div class="bg-slate-900/30 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 hover:border-slate-500/40 hover:bg-slate-900/50 hover:shadow-xl hover:shadow-slate-500/5 hover:-translate-y-0.5 transition-all duration-300">
+                        <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+                            <div>
+                                <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono uppercase tracking-wider bg-slate-800/20 text-slate-400 border border-slate-700/40 mb-1.5">
+                                    Graduated
+                                </span>
+                                <h3 class="text-lg font-bold text-white group-hover:text-slate-400 transition-colors duration-200">
+                                    Lagro High School
+                                </h3>
+                            </div>
+                            <span class="text-xs font-mono px-2.5 py-1 rounded-md bg-slate-950 text-slate-400 border border-slate-800 flex items-center gap-1.5 shrink-0">
+                                <i class="fa-regular fa-calendar text-[11px]"></i> 2020 - 2023
+                            </span>
+                        </div>
+                        
+                        <h4 class="text-sm font-semibold text-slate-300">Junior High School</h4>
+                        
+                        <p class="text-slate-400 text-sm mt-3 leading-relaxed text-justify">
+                            Built a strong, consistent academic foundation. Discovered an early interest in computing technologies through initial logic exercises, interactive collaborative class assignments, and group projects.
+                        </p>
+
+                        <!-- Core Competency Micro-Pills -->
+                        <div class="flex flex-wrap gap-1.5 pt-4 mt-2 border-t border-slate-800/40">
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">General Academics</span>
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Logic Introduction</span>
+                            <span class="bg-slate-950 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-800/60">Team Collaboration</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 10. Verification Certificates Track Section Component -->
+        <section class="py-12 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl font-bold tracking-tight text-slate-300">Credentials & Certifications</h2>
+                <div class="w-10 h-0.5 bg-blue-500 mx-auto mt-2 rounded-full opacity-60"></div>
+            </div>
+
+            <!-- FIXED: Updated to 3 columns (md:grid-cols-3) and optimized width layout container -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+                
+                <!-- Certificate Element Card item 1: Lean Six Sigma -->
+                <div onclick="openImageModal('Images/SIGMA.png', 'White Belt Completer')"
+                    class="bg-slate-900/40 backdrop-blur-md p-5 rounded-xl border border-blue-900/20 flex flex-col justify-between hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 cursor-pointer transition-all duration-300 group select-none">
+                    
+                    <div class="flex items-start gap-4">
+                        <div class="text-2xl text-blue-400 pt-1 transition-transform group-hover:scale-110 duration-300">
+                            <i class="fa-solid fa-certificate"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base transition-colors group-hover:text-blue-400 duration-200">Lean Six Sigma</h3>
+                            <span class="inline-block mt-2 font-mono text-[11px] bg-blue-950 text-blue-400 border border-blue-900/30 px-2 py-0.5 rounded">2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Sleek Interactive Bottom Tray Indicator Unique to Certificates -->
+                    <div class="mt-4 pt-2.5 border-t border-blue-900/10 flex items-center justify-between text-[11px] text-slate-400 group-hover:text-blue-400/90 transition-colors duration-200">
+                        <span class="font-mono tracking-wider">View Full Certificate</span>
+                        <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover:translate-x-0.5 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- MOVED: Certificate Element Card item 3: Hackathon Jam (Now in the Center) -->
+                <div onclick="openImageModal('Images/HARD-TO-GIT.png', 'Hackathon Jam Participator')"
+                    class="bg-slate-900/40 backdrop-blur-md p-5 rounded-xl border border-blue-900/20 flex flex-col justify-between hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 cursor-pointer transition-all duration-300 group select-none">
+
+                    <div class="flex items-start gap-4">
+                        <div class="text-2xl text-blue-400 pt-1 transition-transform group-hover:scale-110 duration-300">
+                            <i class="fa-solid fa-certificate"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base transition-colors group-hover:text-blue-400 duration-200">Hackathon Jam</h3>
+                            <span class="inline-block mt-2 font-mono text-[11px] bg-blue-950 text-blue-400 border border-blue-900/30 px-2 py-0.5 rounded">2026</span>
+                        </div>
+                    </div>
+
+                    <!-- Sleek Interactive Bottom Tray Indicator Unique to Certificates -->
+                    <div class="mt-4 pt-2.5 border-t border-blue-900/10 flex items-center justify-between text-[11px] text-slate-400 group-hover:text-blue-400/90 transition-colors duration-200">
+                        <span class="font-mono tracking-wider">View Full Certificate</span>
+                        <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover:translate-x-0.5 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Certificate Element Card item 2: Computer Systems Servicing (TESDA) -->
+                <div onclick="openImageModal('Images/TESDA.png', 'Tesda NC II Completer')"
+                    class="bg-slate-900/40 backdrop-blur-md p-5 rounded-xl border border-blue-900/20 flex flex-col justify-between hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 cursor-pointer transition-all duration-300 group select-none">
+
+                    <div class="flex items-start gap-4">
+                        <div class="text-2xl text-blue-400 pt-1 transition-transform group-hover:scale-110 duration-300">
+                            <i class="fa-solid fa-certificate"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-white text-base transition-colors group-hover:text-blue-400 duration-200">ICT - CSS</h3>
+                            <span class="inline-block mt-2 font-mono text-[11px] bg-blue-950 text-blue-400 border border-blue-900/30 px-2 py-0.5 rounded">2024</span>
+                        </div>
+                    </div>
+
+                    <!-- FIXED: Restored missing bottom interactive bar & wrapper closing layout logic tags -->
+                    <div class="mt-4 pt-2.5 border-t border-blue-900/10 flex items-center justify-between text-[11px] text-slate-400 group-hover:text-blue-400/90 transition-colors duration-200">
+                        <span class="font-mono tracking-wider">View Full Certificate</span>
+                        <i class="fa-solid fa-magnifying-glass-plus text-xs group-hover:translate-x-0.5 transition-transform"></i>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 5. Redesigned Projects Section Component (Dark Cyber Theme Grid Layout) -->
+        <section id="projects" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold tracking-tight text-white">Portfolio</h2>
+                <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
+            </div>
+
+        <!-- FIXED: Updated layout array to 3 columns on mid/large screens (md:grid-cols-3) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Project Card item Object 1: MASQIFY -->
+            <div class="bg-slate-950/80 rounded-2xl border border-blue-900/30 overflow-hidden shadow-2xl hover:border-blue-500/40 transition-all duration-500 flex flex-col group relative">
+
+                <!-- Image Section Container Frame with 18. Hover Zoom & New View Overlay -->
+                <div class="w-full h-48 overflow-hidden relative cursor-pointer">
+                    <!-- Ambient Shadow Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10 opacity-70"></div>
+
+                    <div onclick="openImageModal('Images/MASQIFY.png', 'MASQIFY PROTOTYPE')" class="absolute inset-0 bg-blue-950/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center gap-2 text-white">
+                        <span class="bg-blue-600/80 p-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <i class="fa-solid fa-eye text-lg"></i>
+                        </span>
+                        <span class="text-sm font-medium tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">View Full Image</span>
+                    </div>
+
+                    <img 
+                        src="Images/MASQIFY.png" 
+                        alt="MASQIFY Interface Design Mockup display preview" 
+                        class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
+                    />
+                </div>
+
+                <!-- Core Info Context Section Box -->
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <h3 class="text-lg font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors truncate">MASQIFY</h3>
+                            <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase shrink-0">Hackathon Jam</span>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed text-justify">
+                            A web application that generates temporary and disposable email addresses to help protect users' privacy during online activities. It creates short-term inboxes for account registrations and automatically expires them after a certain period to reduce spam and keep personal email addresses secure.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Project Members Subsection -->
+                        <div class="space-y-1.5 pt-1">
+                            <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-users text-[8px] text-blue-500/70"></i> Contributors
+                            </span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900/60 border border-slate-800/80 text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded">Euan Chua</span>
+                                <span class="bg-slate-900/60 border border-slate-800/80 text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded">Lloyd Casiano</span>
+                                <span class="bg-slate-900/60 border border-slate-800/80 text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded">Chrisleen Villacorza</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1">
+                            <span class="bg-purple-950/80 border border-purple-900/50 text-purple-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">UI/UX</span>
+                            <span class="bg-pink-950/80 border border-pink-900/50 text-pink-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">Prototype</span>
+                        </div>
+
+                        <div class="pt-3 border-t border-blue-900/20 flex items-center justify-between gap-2">
+                            <a href="https://masqify.me" target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-slate-400 hover:text-white transition duration-200 flex items-center gap-1">
+                                <i class="fab fa-google text-xs"></i> Web URL
+                            </a>
+                            <a href="https://masqify.me" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-blue-400 hover:text-slate-300 transition duration-200 flex items-center gap-0.5">
+                                View Website <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card item Object 2: PORTFOLIO -->
+            <div class="bg-slate-950/80 rounded-2xl border border-blue-900/30 overflow-hidden shadow-2xl hover:border-blue-500/40 transition-all duration-500 flex flex-col group relative">
+
+                <!-- Image Section Container Frame with 18. Hover Zoom & New View Overlay -->
+                <div class="w-full h-48 overflow-hidden relative cursor-pointer">
+                    <!-- Ambient Shadow Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10 opacity-70"></div>
+
+                    <div onclick="openImageModal('Images/PORTFOLIO.png', 'WEBSITE PORTFOLIO')" class="absolute inset-0 bg-blue-950/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center gap-2 text-white">
+                        <span class="bg-blue-600/80 p-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <i class="fa-solid fa-eye text-lg"></i>
+                        </span>
+                        <span class="text-sm font-medium tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">View Full Image</span>
+                    </div>
+
+                    <img 
+                        src="Images/PORTFOLIO.png" 
+                        alt="Portfolio Interface Design Mockup display preview" 
+                        class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
+                    />
+                </div>
+
+                <!-- Core Info Context Section Box -->
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <h3 class="text-lg font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors truncate">Personal Website   </h3>
+                            <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase shrink-0">CV</span>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed text-justify">
+                            A digital portfolio designed to showcase my work, skills, and passion for software development. From web applications to personal projects, each section reflects my commitment to creating modern, responsive, and meaningful digital solutions while continuously improving as a developer.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Project Members Subsection -->
+                        <div class="space-y-1.5 pt-1">
+                            <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-users text-[8px] text-blue-500/70"></i> Contributors
+                            </span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900/60 border border-slate-800/80 text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded">Chrisantie Buenaobra</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1">
+                            <span class="bg-blue-950/80 border border-blue-900/50 text-blue-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">VS Code</span>
+                            <span class="bg-green-950/80 border border-green-900/50 text-green-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">Gemini</span>
+                            <span class="bg-yellow-950/80 border border-yellow-900/50 text-yellow-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">Antigravity</span>
+                        </div>
+
+                        <div class="pt-3 border-t border-blue-900/20 flex items-center justify-between gap-2">
+                            <a href="https://masqify.me" target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-slate-400 hover:text-white transition duration-200 flex items-center gap-1">
+                                <i class="fab fa-google text-xs"></i> Web URL
+                            </a>
+                            <a href="https://masqify.me" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-blue-400 hover:text-slate-300 transition duration-200 flex items-center gap-0.5">
+                                View Website <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project Card item Object 3: Password Manager -->
+            <div class="bg-slate-950/80 rounded-2xl border border-blue-900/30 overflow-hidden shadow-2xl hover:border-blue-500/40 transition-all duration-500 flex flex-col group relative">
+                
+                <!-- Image Section Container Frame with 18. Hover Zoom & New View Overlay -->
+                <div class="w-full h-48 overflow-hidden relative cursor-pointer">
+                    <!-- Ambient Shadow Gradient Overlay -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10 opacity-70"></div>
+    
+                    <div onclick="openImageModal('Images/MANAGER.png', 'Password Manager Prototype')" class="absolute inset-0 bg-blue-950/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center gap-2 text-white">
+                        <span class="bg-blue-600/80 p-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                            <i class="fa-solid fa-eye text-lg"></i>
+                        </span>
+                        <span class="text-sm font-medium tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300 delay-75">View Full Image</span>
+                    </div>
+
+                    <img 
+                        src="Images/MANAGER.png" 
+                        alt="Password Manager Interface Design display preview" 
+                        class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
+                        onerror="this.src='https://placehold.co/600x400/0b1120/ffffff?text=Password+Manager'"
+                    />
+                </div>
+
+                <!-- Core Info Context Section Box -->
+                <div class="p-5 flex flex-col flex-grow justify-between space-y-4">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <h3 class="text-lg font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors truncate">Password Manager</h3>
+                            <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase shrink-0">Group</span>
+                        </div>
+                        <p class="text-slate-400 text-xs leading-relaxed text-justify">
+                            A secure and user-friendly password management application developed as our final group project. It provides encrypted storage for usernames and passwords to help protect users' personal information and maintain data privacy.
+                        </p>
+                    </div>
+
+                    <div class="space-y-3">
+                        <!-- Project Members Subsection -->
+                        <div class="space-y-1.5 pt-1">
+                            <span class="text-[9px] font-mono tracking-widest text-slate-500 uppercase flex items-center gap-1.5">
+                                <i class="fa-solid fa-users text-[8px] text-blue-500/70"></i> Contributors
+                            </span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900/60 border border-slate-800/80 text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded">Euan Chua</span>
+                                <span class="bg-slate-900/60 border border-slate-800/80 text-slate-400 text-[9px] font-mono px-1.5 py-0.5 rounded">Chrisleen Villacorza</span>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1">
+                            <span class="bg-orange-950/80 border border-orange-900/50 text-orange-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">Java</span>
+                            <span class="bg-blue-950/80 border border-blue-900/50 text-blue-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">VS Code</span>
+                            <span class="bg-gray-950/80 border border-white-900/50 text-gray-400 text-[9px] font-mono px-1.5 py-0.5 rounded-md">GitHub</span>
+                        </div>
+
+                        <div class="pt-3 border-t border-blue-900/20 flex items-center justify-between gap-2">
+                            <a href="https://github.com/kdynvmd/your-repo-name" target="_blank" rel="noopener noreferrer" class="text-xs font-medium text-slate-400 hover:text-white transition duration-200 flex items-center gap-1">
+                                <i class="fab fa-github text-xs"></i> GitHub Source
+                            </a>
+                            <a href="https://your-website-url.com" target="_blank" rel="noopener noreferrer" class="text-xs font-semibold text-blue-400 hover:text-slate-300 transition duration-200 flex items-center gap-0.5">
+                                View Source <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+                <!-- Global Image Viewer Lightbox Modal Overlay Layout Frame -->
+                <div id="imageLightboxModal" class="fixed inset-0 z-[99999] hidden opacity-0 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 transition-opacity duration-300 ease-in-out" onclick="closeImageModal()">
+
+                    <!-- Isolated Top Right Close Button Anchor -->
+                    <div class="absolute top-4 right-4 z-10">
+                        <button class="w-11 h-11 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white flex items-center justify-center text-xl transition duration-200 shadow-2xl" onclick="closeImageModal()">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+    
+                    <!-- FIXED: Unified Render Frame Wrapper with an integrated caption panel at the bottom -->
+                    <div class="relative max-w-5xl max-h-[85vh] flex flex-col items-center bg-slate-950/40 backdrop-blur-md rounded-2xl border border-blue-900/30 p-3 shadow-2xl" onclick="event.stopPropagation()">
+        
+                        <!-- Image Container Frame -->
+                        <img id="lightboxTargetImage" src="" alt="Fullscreen Expanded Preview Capture" class="max-w-full max-h-[70vh] object-contain rounded-xl block">
+        
+                        <!-- FIXED: The caption text is now centered cleanly right underneath the screenshot inside the card -->
+                        <div class="w-full pt-3 pb-1 border-t border-blue-900/20 mt-3 text-center">
+                            <p id="lightboxCaption" class="text-xs sm:text-sm font-mono tracking-widest text-white-400 font-semibold uppercase truncate"></p>
+                        </div>
+        
+                    </div>
+                </div>
+
+        <!-- 12. Premium Minimalist CV Interaction Section -->
+        <section id="resume" class="py-24 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <!-- Main Outer Creative Panel Container -->
+            <div class="relative w-full max-w-4xl mx-auto bg-slate-950/40 backdrop-blur-md rounded-3xl border border-blue-900/20 overflow-hidden group hover:border-blue-500/30 transition-all duration-500 select-none">
+                
+                <!-- Ambient Cyber Background Grid Overlay Grid -->
+                <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:2rem_2rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"></div>
+                
+                <!-- Interactive Aurora Glow Effect -->
+                <div class="absolute -top-40 -left-40 w-80 h-80 rounded-full bg-blue-500/5 blur-[100px] group-hover:bg-blue-500/10 transition-all duration-700 pointer-events-none"></div>
+                <div class="absolute -bottom-40 -right-40 w-80 h-80 rounded-full bg-indigo-500/5 blur-[100px] group-hover:bg-indigo-500/10 transition-all duration-700 pointer-events-none"></div>
+
+                <!-- Central Layout Box Content Frame -->
+                <div class="relative z-10 px-8 py-20 md:py-28 flex flex-col items-center justify-center text-center space-y-8">
+                    
+                    <!-- Micro Categorization Label Stack -->
+                    <div class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span class="text-[10px] font-mono tracking-[0.25em] text-slate-500 uppercase">Curriculum Vitae</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                    </div>
+
+                    <!-- Inspired Cinematic Bold Typography Header -->
+                    <div class="space-y-2">
+                        <h2 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                            View full CV here.
+                        </h2>
+                    </div>
+
+                    <!-- Clean Dual Action Button Deck Component Interface -->
+                    <!-- NOTE: Update both href links below to target your specific file location folder path -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto pt-4">
+                        
+                        <!-- Action 1: Fullscreen Inline Browser Viewer Trigger Link -->
+                        <a href="PDF File/CVRESUME.pdf" target="_blank" rel="noopener noreferrer"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-xs font-bold tracking-wider uppercase text-white bg-slate-900 border border-blue-900/40 hover:border-blue-500/50 rounded-xl transition-all duration-300 hover:shadow-[0_0_20px_rgba(59,130,246,0.15)] group/btn">
+                            <span>Open CV</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-[10px] text-slate-400 group-hover/btn:text-blue-400 transition-colors"></i>
+                        </a>
+
+                        <!-- ADDED: Minimalist Text Separator -->
+                        <span class="text-xs font-mono text-slate-600 select-none lowercase my-1 sm:my-0">or</span>
+
+                        <!-- Action 2: Direct Local File PDF Download Trigger Link -->
+                        <a href="PDF File/CVRESUME.pdf" download="Chrisantie_Buenaobra_CV.pdf"
+                        class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-7 py-3.5 text-xs font-bold tracking-wider uppercase text-slate-950 bg-blue-500 hover:bg-blue-400 rounded-xl transition-all duration-300 hover:shadow-[0_0_25px_rgba(59,130,246,0.3)] group/dl">
+                            <i class="fa-solid fa-cloud-arrow-down text-sm transform group-hover/dl:-translate-y-0.5 transition-transform duration-200"></i>
+                            <span>Download CV</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+                
+                <!-- Bottom Technical Border Frame Line Graphic Accent -->
+                <div class="absolute bottom-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-blue-500/20 to-transparent transform scale-x-50 group-hover:scale-x-100 transition-transform duration-700 ease-out"></div>
+            </div>
+        </section>
+
+        <!-- 13. Upgraded High-Fidelity Footer Component Layout Layer -->
+        <footer class="mt-20 border-t border-blue-900/20 bg-slate-950/80 backdrop-blur-md py-12 px-6 relative z-10">
+            <!-- Main Content Container with Split Flex-Row Alignment -->
+            <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+
+                <!-- Left Column Identity Block Layer -->
+                <div class="space-y-2 text-center md:text-left">
+                    <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                        Chrisantie Cruz Buenaobra
+                    </h3>
+                    <p class="text-xs sm:text-sm text-slate-400 font-medium">
+                        Information Systems Student &bull; 2026
+                    </p>
+                </div>
+
+                <!-- Right Column Action & Metadata Deck Layer -->
+                <div class="flex flex-col items-center md:items-end gap-4">
+                    
+                    <!-- Footer Social Directory Array (Re-styled as Capsule/Pill Layouts) -->
+                    <div class="flex flex-wrap justify-center items-center gap-2.5">
+                        <!-- Email Capsule Tag -->
+                        <a href="mailto:riscrzbuenaobrawrk@gmail.com" 
+                           class="px-4 py-1.5 inline-flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-xs font-bold tracking-wide text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300">
+                            Email
+                        </a>
+                        <!-- GitHub Circle Token -->
+                        <a href="https://github.com/kdynvmd" target="_blank" rel="noopener noreferrer" 
+                           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300" 
+                           title="GitHub Profile">
+                            <i class="fab fa-github text-sm"></i>
+                        </a>
+                        <!-- Facebook Circle Token -->
+                        <a href="https://www.facebook.com/r1s.cruz" target="_blank" rel="noopener noreferrer" 
+                           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300" 
+                           title="Facebook Profile">
+                            <i class="fab fa-facebook-f text-xs"></i>
+                        </a>
+                        <!-- Instagram Circle Token -->
+                        <a href="https://www.instagram.com/nvmdr1s_/" target="_blank" rel="noopener noreferrer" 
+                           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300" 
+                           title="Instagram Profile">
+                            <i class="fab fa-instagram text-xs"></i>
+                        </a>
+                    </div>
+
+                    <!-- Meta Location Matrix Label Vector -->
+                    <div class="text-[10px] font-mono tracking-[0.2em] text-slate-500 uppercase select-none">
+                        Based in Philippines &bull; 1427
+                    </div>
+                </div>
+
+            </div>
+        </footer>
+
+    </main>
+
+        <script>
+            window.addEventListener('load', () => {
+                const preloader = document.getElementById('loading-screen');
+                if (preloader) {
+                    preloader.classList.add('opacity-0');
+                    setTimeout(() => preloader.remove(), 700);
+                }
+        
+                initTypingEffect();
+                initScrollRevealObserver();
+            });
+
+            // 16. Unified Dynamic Navbar Controller (Scroll & Mobile Actions)
+            const navbar = document.getElementById('navbar');
+            const menuBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = menuBtn?.querySelector('i');
+
+            // Dynamic scroll scaling optimization state switch
+            window.addEventListener('scroll', () => {
+                if (!navbar) return;
+                const isScrolled = window.scrollY > 50;
+                navbar.classList.toggle('py-2.5', isScrolled);
+                navbar.classList.toggle('bg-black/80', isScrolled);
+                navbar.classList.toggle('shadow-blue-500/5', isScrolled);
+                navbar.classList.toggle('py-4', !isScrolled);
+            });
+
+            // Animated Mobile Drawer Action linking mechanics
+            if (menuBtn && mobileMenu) {
+                const toggleMenu = (open) => {
+                    if (open) {
+                    mobileMenu.classList.remove('hidden');
+                    if (menuIcon) menuIcon.className = 'fa-solid fa-xmark';
+                    setTimeout(() => mobileMenu.classList.remove('scale-95', 'opacity-0'), 10);
+                } else {
+                    mobileMenu.classList.add('scale-95', 'opacity-0');
+                    if (menuIcon) menuIcon.className = 'fa-solid fa-bars';
+                    setTimeout(() => mobileMenu.classList.add('hidden'), 300);
+                }
+            };
+
+            menuBtn.addEventListener('click', () => {
+                const isClosed = mobileMenu.classList.contains('hidden');
+                toggleMenu(isClosed);
+            });
+
+            // Close drawer instantly on linking anchor selections
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => toggleMenu(false));
+            });
+        }
+
+        // Intelligent Desktop Morphing Dock Link Sliding Hover System
+        const navList = document.getElementById('nav-list');
+        const navLinks = document.querySelectorAll('.nav-link-pill');
+        const indicator = document.getElementById('nav-indicator');
+
+        if (navList && indicator) {
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', (e) => {
+                    const linkRect = e.target.getBoundingClientRect();
+                    const parentRect = navList.getBoundingClientRect();
+                    const targetLeft = linkRect.left - parentRect.left;
+        
+                    indicator.style.width = `${linkRect.width}px`;
+                    indicator.style.transform = `translateX(${targetLeft}px)`;
+                    indicator.style.opacity = '1';
+                });
+            });
+        
+            navList.addEventListener('mouseleave', () => {
+                indicator.style.opacity = '0';
+            });
+        }
+
+        // 1. Animated Character Text Typing Simulation Loop
+        function initTypingEffect() {
+            const targetSpan = document.getElementById('typing-element');
+            if (!targetSpan) return;
+
+            const stringsArray = ["Aspiring Frontend Developer", "Aspiring Backend Developer", "Aspiring UI/UX Designer"];
+            let stringIdx = 0, charIdx = 0, isDeleting = false, typeSpeed = 100;
+
+            function processTypeLoop() {
+                const currentFullString = stringsArray[stringIdx];
+                
+                if (isDeleting) {
+                    targetSpan.textContent = currentFullString.substring(0, charIdx - 1);
+                    charIdx--;
+                    typeSpeed = 40; 
+                } else {
+                    targetSpan.textContent = currentFullString.substring(0, charIdx + 1);
+                    charIdx++;
+                    typeSpeed = 100; 
+                }
+
+                if (!isDeleting && charIdx === currentFullString.length) {
+                    isDeleting = true;
+                    typeSpeed = 1800; 
+                } else if (isDeleting && charIdx === 0) {
+                    isDeleting = false;
+                    stringIdx = (stringIdx + 1) % stringsArray.length;
+                    typeSpeed = 400; 
+                }
+
+                setTimeout(processTypeLoop, typeSpeed);
+            }
+            processTypeLoop();
+        }
+
+        // 7. Intersection Scroll Observer Reveal Controller
+        function initScrollRevealObserver() {
+            const elementsToReveal = document.querySelectorAll('.reveal');
+            const targetRevealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active-reveal');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { root: null, threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
+
+            elementsToReveal.forEach(element => targetRevealObserver.observe(element));
+        }
+
+        // 8. Image Fullscreen Lightbox Modal View Controller
+        function openImageModal(imageSrc, captionText = "Project Showcase") {
+            const modal = document.getElementById('imageLightboxModal');
+            const modalImg = document.getElementById('lightboxTargetImage');
+            const modalCaption = document.getElementById('lightboxCaption');
+
+            if (modal && modalImg) {
+                modalImg.src = imageSrc;
+                if (modalCaption) modalCaption.textContent = captionText.toUpperCase();
+        
+                modal.classList.remove('hidden');
+                setTimeout(() => modal.classList.remove('opacity-0'), 10);
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('imageLightboxModal');
+            if (modal) {
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }, 300);
+            }
+        }
+
+        // 15. Responsive Hardware Accelerated Pointer Tracking
+        (() => {
+            const cursorDot = document.getElementById('customCursor');
+            const cursorFollower = document.getElementById('customCursorFollower');
+
+            // Safety Guard: Disable script entirely on mobile/touch interfaces to save processing performance
+            if (!cursorDot || !cursorFollower || !window.matchMedia('(pointer: fine)').matches) return;
+
+            window.addEventListener('mousemove', (e) => {
+                cursorDot.style.left = `${e.clientX}px`;
+                cursorDot.style.top = `${e.clientY}px`;
+                cursorFollower.style.left = `${e.clientX}px`;
+                cursorFollower.style.top = `${e.clientY}px`;
+            });
+
+            const refreshHoverTargets = () => {
+                document.querySelectorAll('a, button, input, textarea, [role="button"], .cursor-pointer').forEach(element => {
+                    if (element.dataset.cursorBound) return;
+                    element.dataset.cursorBound = "true";
+
+                    element.addEventListener('mouseenter', () => {
+                        cursorDot.classList.add('cursor-active');
+                        cursorFollower.classList.add('cursor-active');
+                    });
+                    element.addEventListener('mouseleave', () => {
+                        cursorDot.classList.remove('cursor-active');
+                        cursorFollower.classList.remove('cursor-active');
+                    });
+                });
+            };
+
+            refreshHoverTargets();
+            new MutationObserver(() => refreshHoverTargets()).observe(document.body, { childList: true, subtree: true });
+        })();
+    </script>
+</body>
+</html>
