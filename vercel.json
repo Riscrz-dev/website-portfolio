@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/About", "destination": "/" },
+    { "source": "/Skills", "destination": "/" },
+    { "source": "/Experience", "destination": "/" },
+    { "source": "/Education", "destination": "/" },
+    { "source": "/Portfolio", "destination": "/" },
+    { "source": "/Resume", "destination": "/" }
+  ]
+}
