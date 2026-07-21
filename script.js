@@ -9,7 +9,6 @@ window.addEventListener('load', () => {
     initScrollRevealObserver();
 });
 
-// Smooth Scroll for all internal hash links (#about, #skills, #top, etc.)
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
         const targetId = this.getAttribute('href');
@@ -157,30 +156,34 @@ function initScrollRevealObserver() {
     elementsToReveal.forEach(element => targetRevealObserver.observe(element));
 }
 
-function openImageModal(imageSrc, captionText = "Project Showcase") {
+function openImageModal(imageSrc, caption) {
     const modal = document.getElementById('imageLightboxModal');
-    const modalImg = document.getElementById('lightboxTargetImage');
-    const modalCaption = document.getElementById('lightboxCaption');
+    const targetImage = document.getElementById('lightboxTargetImage');
+    const targetCaption = document.getElementById('lightboxCaption');
 
-    if (modal && modalImg) {
-        modalImg.src = imageSrc;
-        if (modalCaption) modalCaption.textContent = captionText.toUpperCase();
+    if (!modal || !targetImage || !targetCaption) return;
+
+        targetImage.src = imageSrc;
+        targetCaption.textContent = caption;
 
         modal.classList.remove('hidden');
-        setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        document.body.style.overflow = 'hidden';
-    }
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+        }, 10);
 }
 
-function closeImageModal() {
-    const modal = document.getElementById('imageLightboxModal');
-    if (modal) {
-        modal.classList.add('opacity-0');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            document.body.style.overflow = 'auto';
-        }, 300);
+function closeImageModal(event) {
+    if (event) {
+        event.stopPropagation();
     }
+
+    const modal = document.getElementById('imageLightboxModal');
+    if (!modal) return;
+
+    modal.classList.add('opacity-0');
+    setTimeout(() => {
+        modal.classList.add('hidden');
+    }, 300); // Matches transition duration
 }
 
 (() => {
