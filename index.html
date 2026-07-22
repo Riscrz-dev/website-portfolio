@@ -29,35 +29,29 @@
     </script>
 </head>
 
-<body id="top" class="bg-gradient-to-b from-[#050816] via-[#0b1120] to-black text-white overflow-x-hidden relative">
+<body class="bg-[#030712] text-white min-h-screen">
 
-    <!-- Desktop Cursor -->
-    <div class="custom-cursor hidden md:block" id="customCursor"></div>
-    <div class="custom-cursor-follower hidden md:block" id="customCursorFollower"></div>
-
-    <!-- Loading Screen -->
-    <div id="loading-screen" class="fixed inset-0 bg-[#050816] z-[9999] flex flex-col items-center justify-center transition-opacity duration-700 ease-in-out">
-        <div class="relative flex items-center justify-center">
-            <div class="w-20 h-20 border-4 border-blue-900/30 border-t-blue-500 rounded-full animate-spin"></div>
-            <span class="absolute text-xl font-bold font-mono text-blue-400">C</span>
+    <!-- Aesthetic Grainy Mesh + Permanent Grid Background -->
+    <div class="fixed inset-0 -z-10 overflow-hidden bg-[#030712] pointer-events-none select-none">
+        
+        <!-- Repeating Grid Lines Overlay -->
+        <div class="absolute inset-0 opacity-[0.12]" 
+             style="background-image: linear-gradient(to right, rgba(255, 255, 255, 0.12) 1px, transparent 1px), 
+                                     linear-gradient(to bottom, rgba(255, 255, 255, 0.12) 1px, transparent 1px); 
+                    background-size: 40px 40px;">
         </div>
-        <p class="text-slate-400 font-mono tracking-widest mt-4 text-sm animate-pulse">Loading Portfolio...</p>
-    </div>
 
-    <!-- BG Decorations -->
-    <div class="absolute inset-0 bg-grid-pattern pointer-events-none z-0"></div>
-    <div class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-600/5 blur-[150px] rounded-full pointer-events-none mix-blend-screen animate-pulse-slow"></div>
-    <div class="absolute top-[1500px] right-1/4 w-[600px] h-[600px] bg-purple-600/5 blur-[180px] rounded-full pointer-events-none mix-blend-screen"></div>
-    <div class="absolute bottom-64 left-10 w-[400px] h-[400px] bg-blue-900/10 blur-[130px] rounded-full pointer-events-none mix-blend-screen"></div>
+        <!-- Ambient Glow Effects -->
+        <div class="absolute -top-40 -right-40 w-[600px] h-[600px] rounded-full bg-gradient-to-bl from-slate-100/30 via-sky-300/15 to-transparent blur-[130px]"></div>
+        <div class="absolute bottom-1/4 -left-32 w-[800px] h-[450px] rounded-full bg-gradient-to-r from-blue-600/50 via-indigo-600/30 to-transparent blur-[150px]"></div>
+    </div>
 
     <!-- Navbar -->
     <header class="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full flex flex-col items-center px-4">
         <nav id="navbar" class="flex items-center justify-between md:justify-center h-14 px-4 rounded-full bg-black/60 backdrop-blur-xl border border-blue-900/30 shadow-2xl transition-all duration-500 ease-out group select-none w-full max-w-5xl">
             <!-- Logo -->
-            <a href="#top" class="text-sm font-bold tracking-wider whitespace-nowrap px-3 transition duration-300">
-                <span class="bg-gradient-to-r from-blue-500 via-blue-400 to-indigo-400 bg-clip-text text-transparent">
-                    PORTFOLIO .ᐟ
-                </span>
+            <a href="#top" class="text-4xl sm:text-lg font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                CHRISANTIE.DEV
             </a>
 
             <!-- Mobile Menu Button -->
@@ -75,8 +69,8 @@
                         <li><a href="#skills" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Skills</a></li>
                         <li><a href="#experience" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Experience</a></li>
                         <li><a href="#education" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Education</a></li>
+                        <li><a href="#credentials" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Credentials</a></li>
                         <li><a href="#portfolio" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Portfolio</a></li>
-                        <li><a href="#resume" class="nav-link-pill text-gray-400 hover:text-white px-4 py-2 rounded-full block">Resume</a></li>
                     </ul>
                 </div>
             </div>
@@ -87,28 +81,34 @@
             <a href="#skills" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Skills</a>
             <a href="#experience" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Experience</a>
             <a href="#education" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Education</a>
+            <a href="#credentials" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Credentials</a>
             <a href="#portfolio" class="text-gray-300 hover:text-blue-400 py-2.5 border-b border-white/5 px-2 block text-sm">Portfolio</a>
-            <a href="#resume" class="text-gray-300 hover:text-blue-400 py-2.5 px-2 block text-sm">Resume</a>
         </div>
     </header>
 
     <!-- Main Content -->
     <main class="w-full min-h-screen relative z-10">
 
-        <!-- Hero Section -->
-        <section class="relative pt-32 md:pt-40 pb-20 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center justify-center">
-            <div class="md:col-span-7 space-y-6 text-center md:text-left order-2 md:order-1">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-medium tracking-wide mx-auto md:mx-0">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Available for Internship
+    <!-- Hero Section -->
+    <section class="relative pt-32 md:pt-40 pb-20 max-w-5xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+
+        <div class="col-span-1 md:col-span-7 flex flex-col items-start space-y-4">
+            
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono tracking-wide whitespace-nowrap">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span>Available for Internship</span>
                 </div>
 
                 <div class="space-y-2">
                     <p class="text-blue-400 font-mono text-sm tracking-widest font-medium">Hi, I'm</p>
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
-                        Chrisantie Buenaobra
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                        Chrisantie C. Buenaobra
                     </h1>
-                    <h2 class="text-xl sm:text-2xl font-semibold text-slate-300 mt-2">
+
+                    <h2 class="text-xl sm:text-2xl font-semibold text-white mt-2">
                         BS Information Systems Student
                     </h2>
                     <div class="text-blue-400 text-lg font-mono min-h-[28px]">
@@ -137,7 +137,7 @@
                 <div class="relative p-2 rounded-full bg-blue-500/5 backdrop-blur-md border border-blue-500/20 shadow-2xl">
                     <div class="absolute inset-0 bg-blue-500/20 blur-[50px] rounded-full -z-10 animate-pulse"></div>
                     <img
-                        src="Favicon/ID2X2.png"
+                        src="Favicon/PROFILE.png"
                         alt="Profile Picture"
                         class="w-48 h-48 sm:w-60 sm:h-60 md:w-64 md:h-64 rounded-full border-4 border-[#0f172a] shadow-[0_0_50px_rgba(59,130,246,0.3)] object-cover hover:scale-105 hover:rotate-2 transition duration-500 pointer-events-auto"
                         onerror="this.src='https://placehold.co/400x400/0b1120/ffffff?text=Chrisantie'"
@@ -160,7 +160,7 @@
                 </div>
 
                 <div class="bg-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-900/20 text-center hover:border-blue-500/40 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-1 transition-all duration-300">
-                    <h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">6+</h3>
+                    <h3 class="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">5+</h3>
                     <p class="text-xs sm:text-sm text-slate-400 mt-1 uppercase font-mono tracking-wider">Technologies Stacked</p>
                 </div>
 
@@ -171,18 +171,27 @@
             </div>
         </section>
 
-        <!-- About Me Section -->
+<!-- About Me Section -->
         <section id="about" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
+            
+            <!-- Header -->
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold tracking-tight">Who am I?</h2>
+                <h2 class="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 hover:from-white hover:via-blue-100 hover:to-blue-400 transition-all duration-500 cursor-default">
+                    Who am I?
+                </h2>
                 <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
             </div>
 
-            <div class="bg-slate-900/30 backdrop-blur-md p-8 rounded-3xl border border-blue-900/20 max-w-4xl mx-auto space-y-8">
+            <div class="group max-w-4xl mx-auto mb-8">
                 <p class="text-slate-300 leading-relaxed text-center text-lg max-w-3xl mx-auto">
-                    I am <strong class="text-blue-400 font-semibold">Chrisantie Cruz Buenaobra</strong>, also known as <strong class="text-blue-400 font-semibold">Ris</strong>. I am a critical thinker who enjoys solving real-world problems and has a strong passion for technology. I love learning how things work, how to design, and how to build websites, which led me to pursue software engineering.
+                    I am <strong class="font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">Chrisantie Cruz Buenaobra</strong>, also known as 
+                    <strong class="font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">Ris</strong>. 
+                    I am a critical thinker who enjoys solving real-world problems and has a strong passion for technology. I love learning how things work, how to design, and how to build websites, which led me to pursue software engineering.
                 </p>
+            </div>
 
+            <!-- Hobbies Section -->
+            <div class="max-w-4xl mx-auto space-y-8">
                 <div>
                     <h3 class="text-center font-mono text-xs uppercase tracking-widest text-slate-400 mb-5">Interests & Personal Hobbies</h3>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -211,12 +220,15 @@
                     </p>
                 </div>
             </div>
+
         </section>
 
         <!-- Professional Skills -->
         <section id="skills" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold tracking-tight">Technical Stack</h2>
+                <h2 class="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                    Technical Stack
+                </h2>
                 <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
             </div>
 
@@ -284,7 +296,7 @@
             </div>
         </section>
 
-        <!-- Focus Tracker Layer -->
+        <!-- Technical Stack -->
         <section class="py-10 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="bg-gradient-to-r from-blue-950/30 to-slate-900/40 backdrop-blur-md p-6 rounded-2xl border border-blue-500/10 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="text-center md:text-left">
@@ -312,7 +324,9 @@
         <!-- Experience Section -->
         <section id="experience" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold tracking-tight">Experience</h2>
+                <h2 class="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                    Experience
+                </h2>
                 <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
             </div>
 
@@ -355,7 +369,9 @@
         <!-- Education Section -->
         <section id="education" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold tracking-tight text-white">Educational History</h2>
+                <h2 class="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                    Educational History
+                </h2>
                 <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
             </div>
 
@@ -468,9 +484,11 @@
         </section>
 
         <!-- Certificates Section -->
-        <section class="py-12 max-w-5xl mx-auto px-6 reveal reveal-up">
+        <section id="#credentials" class="py-12 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="text-center mb-10">
-                <h2 class="text-2xl font-bold tracking-tight text-slate-300">Credentials & Certifications</h2>
+                <h2 class="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                    Credentials & Certificates
+                </h2>
                 <div class="w-10 h-0.5 bg-blue-500 mx-auto mt-2 rounded-full opacity-60"></div>
             </div>
 
@@ -521,7 +539,7 @@
                             <i class="fa-solid fa-certificate"></i>
                         </div>
                         <div>
-                            <h3 class="font-bold text-white text-base transition-colors group-hover:text-blue-400 duration-200">ICT - CSS</h3>
+                            <h3 class="font-bold text-white text-base transition-colors group-hover:text-blue-400 duration-200">NCII CSS</h3>
                             <span class="inline-block mt-2 font-mono text-[11px] bg-blue-950 text-blue-400 border border-blue-900/30 px-2 py-0.5 rounded">2024</span>
                         </div>
                     </div>
@@ -537,7 +555,9 @@
         <!-- Projects Section -->
         <section id="portfolio" class="py-20 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="text-center mb-16">
-                <h2 class="text-3xl font-bold tracking-tight text-white">Portfolio</h2>
+                <h2 class="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                    Projects
+                </h2>
                 <div class="w-12 h-1 bg-blue-500 mx-auto mt-3 rounded-full"></div>
             </div>
 
@@ -606,7 +626,7 @@
                     <div class="w-full h-48 overflow-hidden relative cursor-pointer">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent z-10 opacity-70"></div>
 
-                        <div onclick="openImageModal('Portfolios/PERSONAL_WEBSITE.png', 'WEBSITE PORTFOLIO')" class="absolute inset-0 bg-blue-950/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center gap-2 text-white">
+                        <div onclick="openImageModal('Portfolios/PORTFOLIO_WEBSITE.png', 'WEBSITE PORTFOLIO')" class="absolute inset-0 bg-blue-950/60 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20 flex items-center justify-center gap-2 text-white">
                             <span class="bg-blue-600/80 p-3 rounded-full shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                 <i class="fa-solid fa-eye text-lg"></i>
                             </span>
@@ -614,7 +634,7 @@
                         </div>
 
                         <img
-                            src="Portfolios/PERSONAL_WEBSITE.png"
+                            src="Portfolios/PORTFOLIO_WEBSITE.png"
                             alt="Portfolio Interface Design Mockup display preview"
                             class="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700 ease-out"
                         />
@@ -721,10 +741,10 @@
             </div>
         </section>
 
-        <!-- Image Lightbox Modal -->
+        <!-- Image Lightbox -->
         <div id="imageLightboxModal" class="fixed inset-0 z-[99999] hidden opacity-0 bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center p-4 transition-opacity duration-300 ease-in-out" onclick="closeImageModal(event)">
             <div class="absolute top-4 right-4 z-10">
-                <button class="w-11 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center text-xl transition duration-200 shadow-2xl cursor-pointer" onclick="closeImageModal(event)">
+                <button type="button" class="w-11 h-11 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center text-xl transition duration-200 shadow-2xl cursor-pointer" onclick="closeImageModal(event)">
                     <i class="fa-solid fa-xmark pointer-events-none"></i>
                 </button>
             </div>
@@ -738,7 +758,7 @@
         </div>
 
         <!-- CV Section -->
-        <section id="resume" class="py-24 max-w-5xl mx-auto px-6 reveal reveal-up">
+        <section id="portfolio" class="py-24 max-w-5xl mx-auto px-6 reveal reveal-up">
             <div class="relative w-full max-w-4xl mx-auto bg-slate-950/40 backdrop-blur-md rounded-3xl border border-blue-900/20 overflow-hidden group hover:border-blue-500/30 transition-all duration-500 select-none">
                 <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:2rem_2rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-30 pointer-events-none"></div>
                 <div class="absolute -top-40 -left-40 w-80 h-80 rounded-full bg-blue-500/5 blur-[100px] group-hover:bg-blue-500/10 transition-all duration-700 pointer-events-none"></div>
@@ -753,7 +773,7 @@
 
                     <div class="space-y-2">
                         <h2 class="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
-                            View full CV here.
+                            View CV here.
                         </h2>
                     </div>
 
@@ -778,50 +798,234 @@
             </div>
         </section>
 
+        <!-- Commission Section -->
+        <section id="contact" class="py-24 max-w-5xl mx-auto px-6 reveal reveal-up">
+            <div class="text-center mb-14">
+                <h2 class="text-3xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
+                    Request Form
+                </h2>
+                <div class="w-12 h-1 bg-blue-500 mx-auto mt-4 rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+
+                <div class="lg:col-span-5 bg-slate-950/60 backdrop-blur-xl p-8 rounded-3xl border border-blue-900/30 shadow-2xl flex flex-col justify-between space-y-6 relative overflow-hidden group">
+
+                    <div class="absolute -top-20 -left-20 w-40 h-40 bg-blue-600/20 rounded-full blur-3xl pointer-events-none group-hover:bg-blue-500/30 transition-all duration-700"></div>
+                    <div class="absolute -bottom-20 -right-20 w-40 h-40 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none group-hover:bg-indigo-500/30 transition-all duration-700"></div>
+
+                    <div class="space-y-6 relative z-10">
+
+                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-[11px] font-mono tracking-wide w-fit">
+                            <span class="relative flex h-2 w-2">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                            </span>
+                            Not Yet Available for Commissions
+                        </div>
+
+                        <div class="space-y-2">
+                            <h3 class="text-2xl font-bold text-white tracking-tight leading-tight">
+                                Let's build <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">something.</span>
+                            </h3>
+                        </div>
+
+                        <div class="space-y-2.5 pt-1">
+                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-900/60 border border-yellow-900/20 hover:border-yellow-500/40 hover:bg-yellow-900/90 transition duration-300">
+                                <div class="w-9 h-9 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400 shrink-0">
+                                    <i class="fa-solid fa-bolt text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white">Mobile & Laptop Ready</h4>
+                                    <p class="text-[10px] text-slate-400">Works smoothly on all screen sizes</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-900/60 border border-pink-900/20 hover:border-pink-500/40 hover:bg-pink-900/90 transition duration-300">
+                                <div class="w-9 h-9 rounded-xl bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 shrink-0">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white">Clean Visual Style</h4>
+                                    <p class="text-[10px] text-slate-400">Simple, modern layouts made for your project</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-900/60 border border-purple-900/20 hover:border-purple-500/40 hover:bg-purple-900/90 transition duration-300">
+                                <div class="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+                                    <i class="fa-solid fa-code text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white">Organized Code</h4>
+                                    <p class="text-[10px] text-slate-400">Easy to read HTML, CSS & Tailwind CSS</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-900/60 border border-cyan-900/20 hover:border-cyan-500/40 hover:bg-cyan-900/90 transition duration-300">
+                                <div class="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shrink-0">
+                                    <i class="fa-solid fa-gauge-high text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white">Quick Loading</h4>
+                                    <p class="text-[10px] text-slate-400">Lightweight files so pages open fast</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-900/60 border border-orange-900/20 hover:border-orange-500/40 hover:bg-orange-900/90 transition duration-300">
+                                <div class="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center justify-center text-orange-400 shrink-0">
+                                    <i class="fa-solid fa-layer-group text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white">Interactive Effects</h4>
+                                    <p class="text-[10px] text-slate-400">Smooth hover effects and simple transitions</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-900/60 border border-indigo-900/20 hover:border-indigo-500/40 hover:bg-indigo-900/90 transition duration-300">
+                                <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0">
+                                    <i class="fa-solid fa-clock text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-semibold text-white">On-Time Handling</h4>
+                                    <p class="text-[10px] text-slate-400">Quick progress updates so you hit your deadline</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-blue-900/20 relative z-10">
+                        <div class="p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/50 via-slate-900/80 to-slate-900/50 border border-blue-900/30 flex items-center justify-between">
+                            <div>
+                                <p class="text-[10px] font-mono text-blue-400 uppercase tracking-wider font-semibold">Ready to start?</p>
+                                <p class="text-[11px] text-slate-300 mt-0.5">Fill out the required details.</p>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 shrink-0">
+                                <i class="fa-solid fa-arrow-right text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Commission Form -->
+                <div class="lg:col-span-7 bg-slate-950/40 backdrop-blur-md p-8 rounded-3xl border border-blue-900/20 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+                    <form action="mailto:riscrzbuenaobrawrk@gmail.com" method="POST" enctype="multipart/form-data" class="space-y-5">
+
+                        <div class="flex items-center justify-between pb-2 border-b border-blue-900/20">
+                            <span class="text-xs font-semibold text-slate-300 uppercase tracking-wider">Commission Details</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-mono text-slate-300 uppercase tracking-wider">Full Name <span class="text-rose-400">*</span></label>
+                                <input type="text" name="Name" required placeholder="Juan Dela Cruz" 
+                                    class="w-full bg-slate-900/80 border border-blue-900/30 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none transition duration-200">
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[11px] font-mono text-slate-300 uppercase tracking-wider">Email Address <span class="text-rose-400">*</span></label>
+                                <input type="email" name="Email" required placeholder="juan@example.com" 
+                                    class="w-full bg-slate-900/80 border border-blue-900/30 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none transition duration-200">
+                            </div>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-mono text-slate-300 uppercase tracking-wider">Commission Type <span class="text-rose-400">*</span></label>
+                            <input type="text" name="Subject" required placeholder="Portfolio Website, Front-End Prototyping, etc." 
+                                class="w-full bg-slate-900/80 border border-blue-900/30 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none transition duration-200">
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-mono text-slate-300 uppercase tracking-wider">Description <span class="text-rose-400">*</span></label>
+                            <textarea name="Details" rows="3" required placeholder="Describe your website idea, preferred design style, or features..." 
+                                class="w-full bg-slate-900/80 border border-blue-900/30 focus:border-blue-500 rounded-xl px-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none transition duration-200 resize-none"></textarea>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-[11px] font-mono text-slate-300 uppercase tracking-wider">Upload Files <span class="text-rose-400">*</span></label>
+                            <div class="relative border border-dashed border-blue-900/40 hover:border-blue-500/60 rounded-3xl py-12 px-6 bg-slate-900/60 hover:bg-slate-900/90 transition duration-300 group cursor-pointer flex flex-col items-center justify-center text-center space-y-4">
+                                <input type="file" name="ReferenceFiles" required multiple accept=".png,.jpg,.jpeg,.pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                                
+                                <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 group-hover:scale-110 transition duration-300 shadow-inner">
+                                    <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                                </div>
+                                
+                                <div class="space-y-1">
+                                    <h4 class="text-xs sm:text-sm font-semibold text-white">
+                                        Drop file here <span class="text-slate-400 font-normal">or</span> <span class="text-blue-400 underline decoration-blue-500/40 underline-offset-2">Upload File</span>
+                                    </h4>
+                                    <p class="text-[10px] sm:text-xs text-slate-400">Only PNG, JPG, PDF supported</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" 
+                            class="w-full py-3.5 px-6 rounded-xl bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all duration-300 shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 flex items-center justify-center gap-2 cursor-pointer mt-2">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                            <span>Submit a Request Form</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
         <!-- Footer -->
-        <footer class="mt-20 border-t border-blue-900/20 bg-slate-950/80 backdrop-blur-md py-12 px-6 relative z-10">
-            <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-                <div class="space-y-2 text-center md:text-left">
-                    <h3 class="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+        <footer class="mt-20 bg-transparent text-white py-12 px-6 sm:px-12 relative overflow-hidden z-10">
+
+            <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-950/40 via-blue-900/10 to-transparent pointer-events-none"></div>
+
+            <div class="absolute inset-0 pointer-events-none select-none overflow-hidden">
+                <span class="bubble absolute bottom-0 left-[8%] w-2 h-2 rounded-full bg-blue-400/80 blur-[0.5px]" style="animation-duration: 6s; animation-delay: 0s;"></span>
+                <span class="bubble absolute bottom-0 left-[22%] w-3 h-3 rounded-full bg-white/70 blur-[0.5px]" style="animation-duration: 8.5s; animation-delay: 1.2s;"></span>
+                <span class="bubble absolute bottom-0 left-[38%] w-1.5 h-1.5 rounded-full bg-blue-500/80 blur-[0.5px]" style="animation-duration: 5s; animation-delay: 0.4s;"></span>
+                <span class="bubble absolute bottom-0 left-[52%] w-2.5 h-2.5 rounded-full bg-slate-300/80 blur-[0.5px]" style="animation-duration: 7s; animation-delay: 2.2s;"></span>
+                <span class="bubble absolute bottom-0 left-[68%] w-2 h-2 rounded-full bg-blue-400/80 blur-[0.5px]" style="animation-duration: 6.5s; animation-delay: 3.1s;"></span>
+                <span class="bubble absolute bottom-0 left-[82%] w-3 h-3 rounded-full bg-blue-300/70 blur-[0.5px]" style="animation-duration: 9s; animation-delay: 0.8s;"></span>
+                <span class="bubble absolute bottom-0 left-[94%] w-1.5 h-1.5 rounded-full bg-white/90 blur-[0.5px]" style="animation-duration: 4.8s; animation-delay: 2.6s;"></span>
+            </div>
+
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+
+                <div class="space-y-1 text-center md:text-left">
+                    <h3 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-b from-white via-slate-200 to-slate-500 group-hover:from-white group-hover:via-blue-100 group-hover:to-blue-400 transition-all duration-500">
                         Chrisantie Cruz Buenaobra
                     </h3>
-                    <p class="text-xs sm:text-sm text-slate-400 font-medium">
-                        Information Systems Student &bull; 2026
+                    <p class="text-xs sm:text-sm text-slate-400 font-medium tracking-wide whitespace-nowrap">
+                        CIIT College of Innovation &amp; Integrated Technology
                     </p>
                 </div>
 
-                <div class="flex flex-col items-center md:items-end gap-4">
-                    <div class="flex flex-wrap justify-center items-center gap-2.5">
+                <div class="flex flex-col items-center md:items-end gap-2.5">
+
+                    <div class="flex items-center gap-2.5 flex-wrap justify-center">
                         <a href="mailto:riscrzbuenaobrawrk@gmail.com"
-                           class="px-4 py-1.5 inline-flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-xs font-bold tracking-wide text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300">
+                        class="px-4 py-1.5 inline-flex items-center justify-center rounded-full bg-slate-900/80 backdrop-blur-sm border border-blue-900/50 hover:bg-blue-950 hover:border-blue-500/50 text-xs font-bold text-white transition duration-300">
                             Email
                         </a>
 
                         <a href="https://github.com/Riscrz-dev" target="_blank" rel="noopener noreferrer"
-                           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300"
-                           title="GitHub Profile">
+                        class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900/80 backdrop-blur-sm border border-blue-900/50 hover:bg-blue-950 hover:border-blue-500/50 text-slate-300 hover:text-white transition duration-300"
+                        title="GitHub Profile">
                             <i class="fab fa-github text-sm"></i>
                         </a>
 
                         <a href="https://www.facebook.com/r1s.cruz" target="_blank" rel="noopener noreferrer"
-                           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300"
-                           title="Facebook Profile">
+                        class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900/80 backdrop-blur-sm border border-blue-900/50 hover:bg-blue-950 hover:border-blue-500/50 text-slate-300 hover:text-white transition duration-300"
+                        title="Facebook Profile">
                             <i class="fab fa-facebook-f text-xs"></i>
                         </a>
 
                         <a href="https://www.instagram.com/nvmdr1s_/" target="_blank" rel="noopener noreferrer"
-                           class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900 border border-blue-900/40 text-slate-300 hover:text-white hover:border-blue-500/50 transition duration-300"
-                           title="Instagram Profile">
+                        class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-900/80 backdrop-blur-sm border border-blue-900/50 hover:bg-blue-950 hover:border-blue-500/50 text-slate-300 hover:text-white transition duration-300"
+                        title="Instagram Profile">
                             <i class="fab fa-instagram text-xs"></i>
                         </a>
                     </div>
 
-                    <div class="text-[10px] font-mono tracking-[0.2em] text-slate-500 uppercase select-none">
+                    <div class="text-xs font-mono tracking-wider text-slate-400 whitespace-nowrap">
                         Based in Philippines &bull; 1427
                     </div>
                 </div>
             </div>
-        </footer>
+        </footer>   
     </main>
 
     <script src="script.js"></script>

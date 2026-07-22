@@ -12,10 +12,7 @@ body {
 }
 ::-webkit-scrollbar-thumb {
     background: #838384;
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6;
+    border-radius: 5px;
 }
 
 .reveal {
@@ -36,6 +33,27 @@ body {
 .typing-cursor::after {
     content: '|';
     animation: blink 1s infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(60px) scale(0.4);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.8;
+    }
+    80% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-160px) scale(1.3);
+        opacity: 0;
+    }
+}
+
+.bubble {
+    animation: floatUp infinite linear;
 }
 @keyframes blink {
     0%, 100% { opacity: 1; }
