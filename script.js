@@ -7,6 +7,7 @@ window.addEventListener('load', () => {
 
     initTypingEffect();
     initScrollRevealObserver();
+    initCoverFlowCarousel();
 });
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -156,6 +157,47 @@ function initScrollRevealObserver() {
     elementsToReveal.forEach(element => targetRevealObserver.observe(element));
 }
 
+function updateCoverFlowEffect() {
+    const container = document.getElementById('project-carousel');
+    if (!container) return;
+
+    const cards = container.querySelectorAll('.cover-flow-card');
+    const containerCenter = container.getBoundingClientRect().left + container.offsetWidth / 2;
+
+    cards.forEach(card => {
+        const cardBox = card.getBoundingClientRect();
+        const cardCenter = cardBox.left + cardBox.width / 2;
+
+        const distance = (cardCenter - containerCenter) / (container.offsetWidth / 2);
+        const absDistance = Math.abs(distance);
+
+        const scale = Math.max(0.72, 1.18 - absDistance * 0.45);
+        const opacity = Math.max(0.35, 1 - absDistance * 0.65);
+        const zIndex = Math.round((1 - absDistance) * 100);
+
+        card.style.transform = `scale(${scale})`;
+        card.style.opacity = opacity;
+        card.style.zIndex = zIndex;
+    });
+}
+
+function initCoverFlowCarousel() {
+    const container = document.getElementById('project-carousel');
+    if (!container) return;
+
+    container.addEventListener('scroll', updateCoverFlowEffect);
+    window.addEventListener('resize', updateCoverFlowEffect);
+
+    updateCoverFlowEffect();
+}
+
+function scrollProjectCarousel(direction) {
+    const container = document.getElementById('project-carousel');
+    if (!container) return;
+    const scrollAmount = container.offsetWidth * 0.5;
+    container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
+
 function openImageModal(imageSrc, caption) {
     const modal = document.getElementById('imageLightboxModal');
     const targetImage = document.getElementById('lightboxTargetImage');
@@ -163,13 +205,13 @@ function openImageModal(imageSrc, caption) {
 
     if (!modal || !targetImage || !targetCaption) return;
 
-        targetImage.src = imageSrc;
-        targetCaption.textContent = caption;
+    targetImage.src = imageSrc;
+    targetCaption.textContent = caption;
 
-        modal.classList.remove('hidden');
-        setTimeout(() => {
-            modal.classList.remove('opacity-0');
-        }, 10);
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        modal.classList.remove('opacity-0');
+    }, 10);
 }
 
 function closeImageModal(event) {
@@ -186,6 +228,7 @@ function closeImageModal(event) {
     }, 300); // Matches transition duration
 }
 
+/* Custom Cursor IIFE */
 (() => {
     const cursorDot = document.getElementById('customCursor');
     const cursorFollower = document.getElementById('customCursorFollower');

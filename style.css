@@ -108,6 +108,15 @@ body {
     transition: color 0.3s ease;
 }
 
+.scrollbar-none::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
 #nav-indicator {
     transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
 }
